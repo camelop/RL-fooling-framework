@@ -115,20 +115,30 @@ def ResNet152Module():
 
 class ResNet18(CifarModelBase):
     def __init__(self):
-        self._loadModel(self.__class__.__name__)
+        print('==> Loading {} model'.format('ResNet18'))
+        self.net = ResNet18Module()
+        self._loadModel('ResNet18')
 
 class ResNet34(CifarModelBase):
     def __init__(self):
-        self._loadModel(self.__class__.__name__)
+        print('==> Loading {} model'.format('ResNet34'))
+        self.net = ResNet34Module()
+        self._loadModel('ResNet34')
 
 class ResNet50(CifarModelBase):
     def __init__(self):
-        self._loadModel(self.__class__.__name__)
+        print('==> Loading {} model'.format('ResNet50'))
+        self.net = ResNet50Module()
+        self._loadModel('ResNet50')
 
 class ResNet101(CifarModelBase):
     def __init__(self):
-        self._loadModel(self.__class__.__name__)
+        print('==> Loading {} model'.format('ResNet101'))
+        self.net = ResNet101Module()
+        self._loadModel('ResNet101')
 
 class ResNet152(CifarModelBase):
     def __init__(self):
-        self._loadModel(self.__class__.__name__)
+        print('==> Loading {} model'.format('ResNet152'))
+        self.net = ResNet152Module()
+        self._loadModel('ResNet152')

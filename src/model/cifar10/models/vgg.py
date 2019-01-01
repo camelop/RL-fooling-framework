@@ -12,9 +12,9 @@ cfg = {
 }
 
 
-class VGG19Moduel(nn.Module):
+class VGGModuel(nn.Module):
     def __init__(self, vgg_name='VGG19'):
-        super(VGG19Moduel, self).__init__()
+        super(VGGModuel, self).__init__()
         self.features = self._make_layers(cfg[vgg_name])
         self.classifier = nn.Linear(512, 10)
 
@@ -40,4 +40,6 @@ class VGG19Moduel(nn.Module):
 
 class VGG19(CifarModelBase):
     def __init__(self):
-        self._loadModel(self.__class__.__name__)
+        print('==> Loading {} model'.format('VGG19'))
+        self.net = VGGModuel('VGG19')
+        self._loadModel('VGG19')
