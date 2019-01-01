@@ -3,7 +3,7 @@ import datetime
 
 def getDateStr():
     t = datetime.datetime.now()
-    return f"{str(t.year)}-{str(t.month)}-{str(t.day)}"
+    return "{}-{}-{}".format(str(t.year), str(t.month), str(t.day))
 
 class Config(object):
 
@@ -19,7 +19,7 @@ class Config(object):
     def __init__(self, d={}):
         if not Config.__init:
             # directories
-            self.logging_loc = f"logs/test/{getDateStr()}.log"
+            self.logging_loc = "logs/test/{}.log".format(getDateStr())
             self.mnist_train_image_loc = "dataset/original/train-images.idx3-ubyte"
             self.mnist_train_label_loc = "dataset/original/train-labels.idx1-ubyte"
             self.mnist_test_image_loc = "dataset/original/t10k-images.idx3-ubyte"

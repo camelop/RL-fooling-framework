@@ -9,12 +9,12 @@ def check_file(loc, fail_message=None):
     if os.path.exists(loc):
         return True
     else:
-        logger.error(f"{loc} not found: {fail_message}")
+        logger.error("{} not found: {}".format(loc, fail_message))
         return False
 
 def read_dict(loc):
     if not check_file(loc):
-        logger.error(f"read_dict cannot read {loc}")
+        logger.error("read_dict cannot read {}".format(loc))
         return
     d = {}
     index = 0

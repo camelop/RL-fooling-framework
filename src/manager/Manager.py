@@ -76,7 +76,7 @@ class Manager(object):
         return ret
 
     def report(self):
-        logger.info(f"Success rates: \n{self.success_rates()}")
-        logger.info(f"Average rewards: \n{self.average_rewards()}")
-        logger.info(f"Average turns: \n{self.average_turns()}")
+        logger.info("Success rates: \n{}".format(self.success_rates()))
+        logger.info("Average rewards: \n{}".format(self.average_rewards()))
+        logger.info("Average turns: \n{}".format(self.average_turns()))
         # TODO plot graphs

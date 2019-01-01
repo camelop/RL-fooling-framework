@@ -6,6 +6,7 @@ from util.logger import Logger
 logger = Logger()
 from manager.Manager import Manager
 
+
 def run_experiment(agents, envs, episode=100):
     try:
         for agent in agents:
@@ -29,7 +30,7 @@ def experiment_0(args):
         To test whether we implement 'Manager' correctly.
     '''
     logger.debug("mnist_random_env_random_agent start.")
-    from agent.mnist.RandomAgent import RandomAgent
+    from agent.cifar10.RandomAgent import RandomAgent
     from env.MnistClassifierEnv import MnistClassifierEnv
     run_experiment([RandomAgent()], [MnistClassifierEnv()])
     logger.debug("mnist_random_env_random_agent end.")

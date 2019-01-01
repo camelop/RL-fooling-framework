@@ -1,3 +1,7 @@
 *.pyc
 *.log
 dataset/original
+checkpoint
+__pycache__
+.DS_Store
+.vscode

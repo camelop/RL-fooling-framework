@@ -9,7 +9,7 @@ class EnvBase(object):
         self.reset()
     
     def update(self, action):
-        raise NotImplementedError        
+        raise NotImplementedError
 
     def getState(self):
         raise NotImplementedError
