@@ -20,7 +20,7 @@ class CifarModelBase(object):
             transforms.Normalize((0.4914, 0.4822, 0.4465,), (0.2023, 0.1994, 0.2010,))
         ])
 
-    def predict(self, image):
+    def predict(self, image, prob=False):
         with torch.no_grad():
             if (len(image.shape) == 2):
                 image = np.expand_dims(image, axis=-1)
@@ -28,4 +28,7 @@ class CifarModelBase(object):
             inputs = image[None, :, :, :].to(self.device).float()
             outputs = self.net(inputs)
             outputs = outputs.cpu().numpy()
-            return dict(zip(self.label_set, outputs))
+            if prob:
+                return dict(zip(self.label_set, outputs))
+            else:
+                return self.label_set[np.argmax(outputs)]
