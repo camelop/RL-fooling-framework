@@ -13,8 +13,19 @@ class MnistModelBase(object):
         if self.device == 'cuda':
             self.net = torch.nn.DataParallel(self.net)
             cudnn.benchmark = True
-        checkpoint = torch.load('src/model/mnist/checkpoint/{}'.format(model))        
-        self.net.load_state_dict(checkpoint['net'])
+            checkpoint = torch.load('src/model/mnist/checkpoint/{}'.format(model))        
+            self.net.load_state_dict(checkpoint['net'])
+        else:
+            # original saved file with DataParallel
+            state_dict = torch.load('src/model/mnist/checkpoint/{}'.format(model), map_location=lambda storage, loc: storage)
+            # create new OrderedDict that does not contain `module.`
+            from collections import OrderedDict
+            new_state_dict = OrderedDict()
+            for k, v in state_dict['net'].items():
+                name = k[7:] # remove `module.`
+                new_state_dict[name] = v
+            # load params
+            self.net.load_state_dict(new_state_dict)
         self.transform = transforms.Compose([
             transforms.ToTensor(),
             transforms.Normalize((0.5,), (0.5,))
