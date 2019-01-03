@@ -4,8 +4,8 @@ import torch.backends.cudnn as cudnn
 import torchvision.transforms as transforms
 import numpy as np
 
-class MnistModelBase(object):
-    label_set = [str(i) for i in range(10)]
+class CifarModel(object):
+    label_set = ['plane', 'car', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck']
 
     def _loadModel(self, model):
         self.device = 'cuda' if torch.cuda.is_available() else 'cpu'
@@ -28,7 +28,7 @@ class MnistModelBase(object):
             self.net.load_state_dict(new_state_dict)
         self.transform = transforms.Compose([
             transforms.ToTensor(),
-            transforms.Normalize((0.5,), (0.5,))
+            transforms.Normalize((0.4914, 0.4822, 0.4465,), (0.2023, 0.1994, 0.2010,))
         ])
 
     def predict(self, image, prob=False):
@@ -43,3 +43,6 @@ class MnistModelBase(object):
                 return dict(zip(self.label_set, outputs))
             else:
                 return self.label_set[np.argmax(outputs)]
+        
+    def __str__(self):
+        return "CifarDefaultModel"

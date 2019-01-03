@@ -13,3 +13,6 @@ class EnvBase(object):
 
     def getState(self):
         raise NotImplementedError
+
+    def __str__(self):
+        return self.__class__.__name__

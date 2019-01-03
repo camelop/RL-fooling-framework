@@ -21,3 +21,7 @@ download Mnist dataset and unzip all so the folder looks like:
                 - MobileNet
                 - VGG19
                 
+## run experiment
+
+- To test the fooling, try ```python src/run.py 0```
+- To convert a trajectory, try ```python src/trajectory_convert.py $Trajectory_location```

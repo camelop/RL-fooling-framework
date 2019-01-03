@@ -6,7 +6,7 @@ for more details.
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from ..CifarModelBase import CifarModelBase
+from ..CifarModel import CifarModel
 
 
 
@@ -53,7 +53,7 @@ class MobileNetModule(nn.Module):
         out = self.linear(out)
         return out
 
-class MobileNet(CifarModelBase):
+class MobileNet(CifarModel):
     def __init__(self):
         print('==> Loading {} model'.format('MobileNet'))
         self.net = MobileNetModule()

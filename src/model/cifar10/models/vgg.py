@@ -1,7 +1,7 @@
 '''VGG11/13/16/19 in Pytorch.'''
 import torch
 import torch.nn as nn
-from ..CifarModelBase import CifarModelBase
+from ..CifarModel import CifarModel
 
 
 cfg = {
@@ -38,7 +38,7 @@ class VGGModuel(nn.Module):
         layers += [nn.AvgPool2d(kernel_size=1, stride=1)]
         return nn.Sequential(*layers)
 
-class VGG19(CifarModelBase):
+class VGG19(CifarModel):
     def __init__(self):
         print('==> Loading {} model'.format('VGG19'))
         self.net = VGGModuel('VGG19')

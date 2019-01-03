@@ -7,7 +7,6 @@ from util.similarity import punish_ssim
 from env.EnvBase import EnvBase
 from util.dataset.mnist import MnistDataset
 from model.mnist.Random import Random as random_classifier
-from model.mnist.models.lenet import LeNet as lenet_classifier
 
 
 import random
@@ -25,7 +24,7 @@ class MnistClassifierEnv(EnvBase):
         self.true_label = None
         self.current_punish = 0
 
-    def __init__(self, model=lenet_classifier(), sim_punish_model=punish_ssim, sim_punish_weight=1, success_reward=10, max_turn=1000, turn_punish=0.01):
+    def __init__(self, model=random_classifier(), sim_punish_model=punish_ssim, sim_punish_weight=1, success_reward=10, max_turn=1000, turn_punish=0.01):
         super(MnistClassifierEnv, self).__init__()
         self.model = model
         self.dataset = MnistDataset(config.mnist_train_image_loc, config.mnist_train_label_loc, config.mnist_test_image_loc, config.mnist_test_label_loc)
@@ -36,11 +35,11 @@ class MnistClassifierEnv(EnvBase):
         self.max_turn = max_turn
     
     def update(self, new_pic):
-        '''return state, reward, isFinish'''
+        '''return state, reward, isFinish, infos'''
         state = (self.original_pic, self.current_pic)
         reward = 0
         if self.finish: # then do no updates
-            return state, reward, self.finish
+            return state, reward, self.finish, {}
         # check shape
         assert new_pic.shape == self.original_pic.shape
         # compute reward
@@ -51,7 +50,8 @@ class MnistClassifierEnv(EnvBase):
         reward -= (sim_punish - self.current_punish) * self.sim_punish_weight
         self.current_punish = sim_punish
         # -- check if fooling success and update state
-        cur_label = self.model.predict(new_pic)
+        cur_label, prob = self.model.predict(new_pic, prob=True)
+        confidence = prob[self.true_label]
         if cur_label != self.true_label:
             # fooling success
             self.success = True
@@ -63,7 +63,7 @@ class MnistClassifierEnv(EnvBase):
             self.finish = True
         self.current_pic = new_pic
         state = (self.original_pic, self.current_pic)
-        return state, reward, self.finish
+        return state, reward, self.finish, dict(confidence=confidence)
     
     def getState(self):
         if self.turn == 0:

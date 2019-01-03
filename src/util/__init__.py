@@ -1,7 +1,11 @@
 import os
-
+import datetime
 from util.logger import Logger
 logger = Logger()
+
+def getTimeStr():
+    t = datetime.datetime.now()
+    return "{}-{}-{}-{}-{}-{}".format(str(t.year), str(t.month), str(t.day), str(t.hour), str(t.minute), str(t.second))
 
 def check_file(loc, fail_message=None):
     if fail_message is None:

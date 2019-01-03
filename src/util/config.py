@@ -24,6 +24,7 @@ class Config(object):
             self.mnist_train_label_loc = "dataset/original/train-labels.idx1-ubyte"
             self.mnist_test_image_loc = "dataset/original/t10k-images.idx3-ubyte"
             self.mnist_test_label_loc = "dataset/original/t10k-labels.idx1-ubyte"
+            self.trajectory_save_dir = "logs/trajectory"
 
             Config.__init = True
             print("Configuration init", file=sys.stderr)

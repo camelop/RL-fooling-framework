@@ -2,7 +2,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from ..MnistModelBase import MnistModelBase
+from ..MnistModel import MnistModel
 
 class LeNetModule(nn.Module):
     def __init__(self):
@@ -22,7 +22,7 @@ class LeNetModule(nn.Module):
         out = self.fc2(out)
         return out
 
-class LeNet(MnistModelBase):
+class LeNet(MnistModel):
     def __init__(self):
         print('==> Loading {} model'.format('LeNet'))
         self.net = LeNetModule()

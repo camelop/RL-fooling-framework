@@ -2,7 +2,10 @@ from util.config import Config
 config = Config()
 from util.logger import Logger
 logger = Logger()
+from manager.Trajectory import Trajectory
+from util import getTimeStr
 
+import os
 from pprint import pformat
 
 class Manager(object):
@@ -21,9 +24,13 @@ class Manager(object):
         self.reset()
         pass
     
-    def run(self, episode=100, train_after_every=10):
+    def run(self, episode=100, train_after_every=10, save_trajectory_every=None):
+        logger.debug("Manager started, {} episodes to go.".format(str(episode)))
         for e in range(episode):
-            result, states, actions, rewards = self.run_episode()
+            result, states, actions, rewards, infos_list = self.run_episode()
+            if save_trajectory_every is not None and (e + 1) % save_trajectory_every == 0:
+                t = Trajectory(str(self.agent), str(self.env), result, states, actions, rewards, infos_list)
+                t.dump(os.path.join(config.trajectory_save_dir, getTimeStr()+"-episode-{}.pickle".format(str(e))))
             # add histories
             self.results.append(result)
             self.rewards.append(sum(rewards))
@@ -34,18 +41,20 @@ class Manager(object):
             self.env.reset()
     
     def run_episode(self):
-        states = [self.env.getState()]
+        states = [self.env.getState()] # There's one more init 'state' so it's longer than other lists
         actions = []
         rewards = []
+        infos_list = []
         while True:
             action = self.agent.act(states[-1])
             actions.append(action)
-            state_, reward, isFinish = self.env.update(action)
+            state_, reward, isFinish, infos = self.env.update(action)
             rewards.append(reward)
+            infos_list.append(infos)
             self.agent.record(states[-1], action, reward, state_)
             states.append(state_)
-            if isFinish:
-                return self.env.success, states, actions, rewards
+            if isFinish: # environment will limit the max_turn
+                return self.env.success, states, actions, rewards, infos_list
         
     def success_rates(self):
         s = 0

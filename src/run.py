@@ -7,13 +7,13 @@ logger = Logger()
 from manager.Manager import Manager
 
 
-def run_experiment(agents, envs, episode=100):
+def run_experiment(agents, envs, episode=100, train_after_every=10, save_trajectory_every=None):
     try:
         for agent in agents:
             for env in envs:
                 logger.info("")
                 manager = Manager(agent, env)
-                manager.run(episode)
+                manager.run(episode, train_after_every, save_trajectory_every)
                 manager.report()
     except:
         logger.error(traceback.format_exc())
@@ -35,6 +35,15 @@ def experiment_0(args):
     run_experiment([RandomAgent()], [MnistClassifierEnv()])
     logger.debug("mnist_random_env_random_agent end.")
 
+def experiment_1(args):
+    '''2018-12-29: 
+        To test whether we can save trajectorys.
+    '''
+    logger.debug("Trajectory test start.")
+    from agent.cifar10.RandomAgent import RandomAgent
+    from env.MnistClassifierEnv import MnistClassifierEnv
+    run_experiment([RandomAgent(pixel_change_max=64)], [MnistClassifierEnv()], episode=3, save_trajectory_every=1)
+    logger.debug("mnist_random_env_random_agent end.")
 
 #----------------------- experiment list -----------------------
 

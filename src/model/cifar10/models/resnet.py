@@ -9,7 +9,7 @@ Reference:
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from ..CifarModelBase import CifarModelBase
+from ..CifarModel import CifarModel
 
 
 class BasicBlock(nn.Module):
@@ -113,31 +113,31 @@ def ResNet101Module():
 def ResNet152Module():
     return ResNet(Bottleneck, [3,8,36,3])
 
-class ResNet18(CifarModelBase):
+class ResNet18(CifarModel):
     def __init__(self):
         print('==> Loading {} model'.format('ResNet18'))
         self.net = ResNet18Module()
         self._loadModel('ResNet18')
 
-class ResNet34(CifarModelBase):
+class ResNet34(CifarModel):
     def __init__(self):
         print('==> Loading {} model'.format('ResNet34'))
         self.net = ResNet34Module()
         self._loadModel('ResNet34')
 
-class ResNet50(CifarModelBase):
+class ResNet50(CifarModel):
     def __init__(self):
         print('==> Loading {} model'.format('ResNet50'))
         self.net = ResNet50Module()
         self._loadModel('ResNet50')
 
-class ResNet101(CifarModelBase):
+class ResNet101(CifarModel):
     def __init__(self):
         print('==> Loading {} model'.format('ResNet101'))
         self.net = ResNet101Module()
         self._loadModel('ResNet101')
 
-class ResNet152(CifarModelBase):
+class ResNet152(CifarModel):
     def __init__(self):
         print('==> Loading {} model'.format('ResNet152'))
         self.net = ResNet152Module()
