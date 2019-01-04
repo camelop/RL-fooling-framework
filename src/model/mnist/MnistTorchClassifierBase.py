@@ -3,10 +3,9 @@ import torch.nn as nn
 import torch.backends.cudnn as cudnn
 import torchvision.transforms as transforms
 import numpy as np
+from .MnistModelBase import MnistModelBase
 
-class MnistModel(object):
-    label_set = [str(i) for i in range(10)]
-
+class MnistTorchClassifierBase(MnistModelBase):
     def _loadModel(self, model):
         self.device = 'cuda' if torch.cuda.is_available() else 'cpu'
         self.net = self.net.to(self.device)
@@ -40,9 +39,6 @@ class MnistModel(object):
             outputs = self.net(inputs)
             outputs = outputs.cpu().numpy()
             if prob:
-                return self.label_set[np.argmax(outputs)], dict(zip(self.label_set, outputs))
+                return self.label_set[np.argmax(outputs)], dict(zip(self.label_set, outputs[0]))
             else:
                 return self.label_set[np.argmax(outputs)]
-    
-    def __str__(self):
-        return "MnistDefaultModel"

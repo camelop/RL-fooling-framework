@@ -42,7 +42,8 @@ def experiment_1(args):
     logger.debug("Trajectory test start.")
     from agent.cifar10.RandomAgent import RandomAgent
     from env.MnistClassifierEnv import MnistClassifierEnv
-    run_experiment([RandomAgent(pixel_change_max=64)], [MnistClassifierEnv()], episode=3, save_trajectory_every=1)
+    from model.mnist.models import LogisticRegression, LeNet
+    run_experiment([RandomAgent(pixel_change_max=64)], [MnistClassifierEnv(LeNet())], episode=3, save_trajectory_every=1)
     logger.debug("mnist_random_env_random_agent end.")
 
 #----------------------- experiment list -----------------------

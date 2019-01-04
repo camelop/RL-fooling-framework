@@ -1,8 +1,7 @@
 import random
+from .MnistModelBase import MnistModelBase
 
-class Random(object):
-    label_set = [str(i) for i in range(10)]
-    
+class Random(MnistModelBase):
     def predict(self, im, prob=False):
         if prob:
             _probs = [random.random() for i in range(10)]

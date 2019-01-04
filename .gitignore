@@ -1,5 +1,5 @@
 *.pyc
-*.log
+logs
 dataset/original
 checkpoint
 __pycache__

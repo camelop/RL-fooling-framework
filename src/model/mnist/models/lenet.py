@@ -2,7 +2,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from ..MnistModel import MnistModel
+from ..MnistTorchClassifierBase import MnistTorchClassifierBase
 
 class LeNetModule(nn.Module):
     def __init__(self):
@@ -20,9 +20,10 @@ class LeNetModule(nn.Module):
         out = out.view(out.size(0), -1)
         out = F.relu(self.fc1(out))
         out = self.fc2(out)
+        out = F.softmax(out, dim=1)
         return out
 
-class LeNet(MnistModel):
+class LeNet(MnistTorchClassifierBase):
     def __init__(self):
         print('==> Loading {} model'.format('LeNet'))
         self.net = LeNetModule()
