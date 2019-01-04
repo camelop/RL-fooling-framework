@@ -31,8 +31,8 @@ class Trajectory(object):
         with open(loc, 'rb') as f:
             self.data = pickle.load(f)
 
-    def createAnimation(self, fps=12.0):
-        if self.data['env_name'] == 'MnistClassifierEnv':
+    def createAnimation(self, fps=24.0):
+        if self.data['env_name'].startswith('MnistClassifierEnv'):
             fig, axs = plt.subplots(1, 3, figsize=(12.8, 3.6))
             confidence = [infos['confidence'] for infos in self.data['infos_list']]
             confidence = [confidence[0]] + confidence
@@ -67,7 +67,7 @@ class Trajectory(object):
                 axs[2].set(xlabel="Turn", ylabel="Confidence(%)")
                 axs[2].vlines([index], 0, 1, transform=axs[2].get_xaxis_transform(), colors='r')
                 axs[2].set_title("Confidence {:.2%}".format(confidence[index]))
-            self.ani = FuncAnimation(fig, update, frames=frames, interval=1000.0/fps, repeat=False)
+            self.ani = FuncAnimation(fig, update, frames=frames, interval=1000.0/fps, repeat=True)
         else:
             raise NotImplementedError
 

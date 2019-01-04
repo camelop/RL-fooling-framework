@@ -11,7 +11,7 @@ def run_experiment(agents, envs, episode=100, train_after_every=10, save_traject
     try:
         for agent in agents:
             for env in envs:
-                logger.info("")
+                logger.info("Begin {} vs {}".format(str(agent), str(env)))
                 manager = Manager(agent, env)
                 manager.run(episode, train_after_every, save_trajectory_every)
                 manager.report()
@@ -30,7 +30,7 @@ def experiment_0(args):
         To test whether we implement 'Manager' correctly.
     '''
     logger.debug("mnist_random_env_random_agent starts.")
-    from agent.cifar10.RandomAgent import RandomAgent
+    from agent.mnist.RandomAgent import RandomAgent
     from env.MnistClassifierEnv import MnistClassifierEnv
     run_experiment([RandomAgent()], [MnistClassifierEnv()])
     logger.debug("mnist_random_env_random_agent ends.")
@@ -40,11 +40,22 @@ def experiment_1(args):
         To test whether we can save trajectorys.
     '''
     logger.debug("Trajectory test starts.")
-    from agent.cifar10.RandomAgent import RandomAgent
+    from agent.mnist.RandomAgent import RandomAgent
     from env.MnistClassifierEnv import MnistClassifierEnv
     from model.mnist.models import LogisticRegression, LeNet
-    run_experiment([RandomAgent(pixel_change_max=64)], [MnistClassifierEnv(LeNet())], episode=3, save_trajectory_every=1)
+    run_experiment([RandomAgent(pixel_change_max=64)], [MnistClassifierEnv()], episode=3, save_trajectory_every=1)
     logger.debug("mnist_random_env_random_agent ends.")
+
+def experiment_2(args):
+    '''2019-1-4:
+        Test attacking LeNet with random agent
+    '''
+    logger.debug("LeNet<->RandomAgent test starts.")
+    from agent.mnist.RandomAgent import RandomAgent
+    from env.MnistClassifierEnv import MnistClassifierEnv
+    from model.mnist.models import LeNet
+    run_experiment([RandomAgent(pixel_change_max=256)], [MnistClassifierEnv(LeNet())], episode=10, save_trajectory_every=1)
+    logger.debug("LeNet<->RandomAgent ends.")
 
 #----------------------- experiment list -----------------------
 

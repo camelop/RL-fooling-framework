@@ -81,3 +81,6 @@ class MnistClassifierEnv(EnvBase):
         self.original_pic = original_pic
         self.current_pic = original_pic
         self.true_label = true_label
+    
+    def __str__(self):
+        return "{}({})".format(self.__class__.__name__, str(self.model))
