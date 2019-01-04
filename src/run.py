@@ -54,7 +54,7 @@ def experiment_2(args):
     from agent.mnist.RandomAgent import RandomAgent
     from env.MnistClassifierEnv import MnistClassifierEnv
     from model.mnist.models import LeNet
-    run_experiment([RandomAgent(pixel_change_max=256)], [MnistClassifierEnv(LeNet())], episode=10, save_trajectory_every=1)
+    run_experiment([RandomAgent(pixel_change_max=256)], [MnistClassifierEnv(LeNet())], episode=1000, save_trajectory_every=1)
     logger.debug("LeNet<->RandomAgent ends.")
 
 #----------------------- experiment list -----------------------

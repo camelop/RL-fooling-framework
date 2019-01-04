@@ -3,10 +3,14 @@ import datetime
 from util.logger import Logger
 logger = Logger()
 
-def getTimeStr():
-    t = datetime.datetime.now()
-    return "{}-{}-{}-{}-{}-{}".format(str(t.year), str(t.month), str(t.day), str(t.hour), str(t.minute), str(t.second))
-
+getTimeStr_STARTTIME = None
+def getTimeStr(useStartTime=True):
+    global getTimeStr_STARTTIME
+    if getTimeStr_STARTTIME is None or not useStartTime:
+        t = datetime.datetime.now()
+        getTimeStr_STARTTIME = "{}-{}-{}-{}-{}-{}".format(str(t.year), str(t.month), str(t.day), str(t.hour), str(t.minute), str(t.second))
+    return getTimeStr_STARTTIME
+    
 def check_file(loc, fail_message=None):
     if fail_message is None:
         fail_message = "File not downloaded or not generated yet, please check your code."

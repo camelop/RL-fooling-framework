@@ -24,7 +24,7 @@ class Manager(object):
         self.reset()
         pass
     
-    def run(self, episode=100, train_after_every=10, save_trajectory_every=None):
+    def run(self, episode=100, train_after_every=10, save_trajectory_every=None, report_after_every=10):
         logger.debug("Manager started, {} episodes to go.".format(str(episode)))
         for e in range(episode):
             result, states, actions, rewards, infos_list = self.run_episode()
@@ -37,6 +37,8 @@ class Manager(object):
             self.turns.append(len(actions))
             if (e + 1) % train_after_every == 0:
                 self.agent.train()
+            if (e + 1) % report_after_every == 0:
+                logger.info("#episode: {};\tsuccess_rate: {:.2%};\taverage reward: {:.2f};\taverage turn: {};".format(str(e+1), self.success_rates()[-1], self.average_rewards()[-1], str(self.average_turns()[-1])))
             self.agent.reset()
             self.env.reset()
     
