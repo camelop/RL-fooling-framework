@@ -1,4 +1,6 @@
 import struct
+import random
+import numpy as np
 
 def parse_image_raw(r):
     magic_num, size, row, col = struct.unpack('>IIII', r[:16])
@@ -33,3 +35,13 @@ class MnistDataset(object):
         self.train_label = parse_label_raw(self.train_label_raw)
         self.test_image, self.test_row, self.test_col = parse_image_raw(self.test_image_raw)
         self.test_label = parse_label_raw(self.test_label_raw)
+    
+    def getExample(self, useRandom=False):
+        if useRandom:
+            index = random.randint(0, len(self.train_image)-1)
+        else:
+            index = 0
+        return (np.array(self.train_image[index]).reshape(self.train_row, self.train_col), self.train_label[index])
+            
+    def getLabels(self):
+        return [str(i) for i in range(10)]

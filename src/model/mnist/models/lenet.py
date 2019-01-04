@@ -28,3 +28,4 @@ class LeNet(MnistTorchClassifierBase):
         print('==> Loading {} model'.format('LeNet'))
         self.net = LeNetModule()
         self._loadModel('LeNet')
+        print('==> {} model Loaded'.format('LeNet'))

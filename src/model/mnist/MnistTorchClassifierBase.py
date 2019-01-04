@@ -33,7 +33,7 @@ class MnistTorchClassifierBase(MnistModelBase):
     def predict(self, image, prob=False):
         with torch.no_grad():
             if (len(image.shape) == 2):
-                image = np.expand_dims(image, axis=-1)
+                image = np.expand_dims(image, axis=-1).astype(np.float64)
             image = self.transform(image)
             inputs = image[None, :, :, :].to(self.device).float()
             outputs = self.net(inputs)
