@@ -14,15 +14,19 @@ from mxnet.gluon import loss as gloss, nn
 
 class CNNDQN(MnistAgentModelBase):
 
-    def __init__(self, learning_rate=0.01, diff_state=True, load_from=None, save_after_every=100):
+    def __init__(self, learning_rate=0.01, diff_state=True, load_from=None, save_after_every=50):
         self.diff_state = diff_state
         self.learning_rate = learning_rate
         self.save_counter = 0
         self.save_after_every = save_after_every
         self.net = nn.Sequential()
         self.net.add(
+            nn.BatchNorm(),
+            nn.Conv2D(channels=8, kernel_size=3, padding = 1, activation='relu'),
+            nn.BatchNorm(),
             nn.Conv2D(channels=4, kernel_size=7, padding = 3, activation='relu'),
-            nn.Conv2D(channels=4, kernel_size=3, padding = 1, activation='relu'),
+            nn.BatchNorm(),
+            # nn.Conv2D(channels=4, kernel_size=3, padding = 1, activation='relu'),
             nn.Conv2D(channels=2, kernel_size=1, padding = 0, activation='relu'),
             )
         def try_gpu():
@@ -35,7 +39,7 @@ class CNNDQN(MnistAgentModelBase):
         self.ctx = try_gpu()
         self.net.initialize(force_reinit=True, ctx=self.ctx, init=init.Xavier(magnitude=0.01))
         self.loss = gloss.L2Loss()
-        self.trainer = gluon.Trainer(self.net.collect_params(), 'adam', {'learning_rate': learning_rate})
+        self.trainer = gluon.Trainer(self.net.collect_params(), 'sgd', {'learning_rate': learning_rate})
         if load_from is not None:
             self.load(load_from)
 
@@ -64,7 +68,6 @@ class CNNDQN(MnistAgentModelBase):
         self.save_counter += 1
         if (self.save_counter+1) % self.save_after_every == 0:
             self.save()
-            logger.info("Net saved")
 
     def save(self, loc=None):
         if loc is None:

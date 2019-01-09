@@ -85,11 +85,11 @@ def experiment_4(args):
     from agent.mnist.model.CNNDQN import CNNDQN
     from env.MnistClassifierEnv import MnistClassifierEnv
     from model.mnist.models import LeNet
-    max_turn = 2000
+    max_turn = 1000
     episode = 500
-    train_after_every = 10
+    train_after_every = 20
     memory_size = 2 * train_after_every * max_turn
-    run_experiment([DqnAgent(CNNDQN(learning_rate=1e-3), action_step=64, memory_size=memory_size, eps_greed=0.1, gamma=0.9)], [MnistClassifierEnv(LeNet(), max_turn=max_turn)], 
+    run_experiment([DqnAgent(CNNDQN(learning_rate=1e-1), action_step=128, memory_size=memory_size, eps_greed=0.1, gamma=0.9)], [MnistClassifierEnv(LeNet(), max_turn=max_turn)], 
                 episode=episode, 
                 train_after_every=train_after_every,
                 save_trajectory_every=20, 

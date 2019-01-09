@@ -29,9 +29,10 @@ class Manager(object):
         for e in range(episode):
             result, states, actions, rewards, infos_list = self.run_episode()
             if (save_trajectory_every is not None and (e + 1) % save_trajectory_every == 0) or result == True:
-                logger.info("Saving {}trajectory {}".format("success " if result else "", str(e)))
                 t = Trajectory(str(self.agent), str(self.env), result, states, actions, rewards, infos_list)
-                t.dump(os.path.join(config.trajectory_save_dir, getTimeStr()+"-episode-{}.pickle".format(str(e))))
+                loc = os.path.join(config.trajectory_save_dir, getTimeStr()+"-episode-{}.pickle".format(str(e)))
+                logger.info("Saving {}trajectory {} -> {}".format("success " if result else "", str(e), str(loc)))
+                t.dump(loc)
             # add histories
             self.results.append(result)
             self.rewards.append(sum(rewards))
@@ -59,31 +60,43 @@ class Manager(object):
             if isFinish: # environment will limit the max_turn
                 return self.env.success, states, actions, rewards, infos_list
         
-    def success_rates(self):
+    def success_rates(self, average_use=50): # success for 50 turn
         s = 0
         ret = []
         for i in range(len(self.results)):
             if self.results[i] == True: # success
                 s += 1
-            success_rate = 1.0 * s / (i + 1.0)
+            if i >= average_use:
+                s -= 1 if self.results[i-average_use] else 0
+                success_rate = 1.0 * s / average_use
+            else:
+                success_rate = 1.0 * s / (i + 1.0)
             ret.append(success_rate)
         return ret
 
-    def average_rewards(self):
+    def average_rewards(self, average_use=50):
         s = 0
         ret = []
         for i in range(len(self.rewards)):
             s += self.rewards[i]
-            average_rewards = 1.0 * s / (i + 1.0)
+            if i >= average_use:
+                s -= self.rewards[i-average_use]
+                average_rewards = 1.0 * s / average_use
+            else:
+                average_rewards = 1.0 * s / (i + 1.0)
             ret.append(average_rewards)
         return ret
 
-    def average_turns(self):
+    def average_turns(self, average_use=50):
         s = 0
         ret = []
         for i in range(len(self.turns)):
             s += self.turns[i]
-            average_turns = 1.0 * s / (i + 1.0)
+            if i >= average_use:
+                s -= self.turns[i-average_use]
+                average_turns = 1.0 * s / average_use
+            else:
+                average_turns = 1.0 * s / (i + 1.0)
             ret.append(average_turns)
         return ret
 
@@ -93,6 +106,6 @@ class Manager(object):
         logger.info("Average rewards: \n{}".format(self.average_rewards()))
         logger.info("Average turns: \n{}".format(self.average_turns()))
         '''
-        logger.record("Success rates: \n{}".format(self.success_rates()))
-        logger.record("Average rewards: \n{}".format(self.average_rewards()))
-        logger.record("Average turns: \n{}".format(self.average_turns()))
+        logger.record("Success: \n{}".format(self.success_rates(1)))
+        logger.record("Rewards: \n{}".format(self.average_rewards(1)))
+        logger.record("Turns: \n{}".format(self.average_turns(1)))
