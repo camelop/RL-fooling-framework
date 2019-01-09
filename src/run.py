@@ -7,13 +7,13 @@ logger = Logger()
 from manager.Manager import Manager
 
 
-def run_experiment(agents, envs, episode=100, train_after_every=10, save_trajectory_every=None):
+def run_experiment(agents, envs, episode=100, train_after_every=10, save_trajectory_every=100, report_after_every=10):
     try:
         for agent in agents:
             for env in envs:
                 logger.info("Begin {} vs {}".format(str(agent), str(env)))
                 manager = Manager(agent, env)
-                manager.run(episode, train_after_every, save_trajectory_every)
+                manager.run(episode, train_after_every, save_trajectory_every, report_after_every=report_after_every)
                 manager.report()
     except:
         logger.error(traceback.format_exc())
@@ -56,6 +56,45 @@ def experiment_2(args):
     from model.mnist.models import LeNet
     run_experiment([RandomAgent(pixel_change_max=256)], [MnistClassifierEnv(LeNet())], episode=1000, save_trajectory_every=1)
     logger.debug("LeNet<->RandomAgent ends.")
+
+def experiment_3(args):
+    '''2019-1-9:
+        Test attacking LeNet with CNNDQN agent
+        result: hard to train
+    '''
+    logger.info("LeNet<->CNNDQN test starts.")
+    from agent.mnist.RandomAgent import RandomAgent
+    from agent.mnist.DqnAgent import DqnAgent
+    from agent.mnist.model.CNNDQN import CNNDQN
+    from env.MnistClassifierEnv import MnistClassifierEnv
+    from model.mnist.models import LeNet
+    run_experiment([DqnAgent(CNNDQN(), action_step=128, memory_size=500, gamma=0.99)], [MnistClassifierEnv(LeNet(), max_turn=100)], 
+                episode=100, 
+                train_after_every=5,
+                save_trajectory_every=10, 
+                report_after_every=1)
+    logger.info("LeNet<->CNNDQN ends.")
+
+def experiment_4(args):
+    '''2019-1-9:
+        Test attacking LeNet with CNNDQN agent with specific settings
+    '''
+    logger.info("LeNet<->CNNDQN (specific settings) test starts.")
+    from agent.mnist.RandomAgent import RandomAgent
+    from agent.mnist.DqnAgent import DqnAgent
+    from agent.mnist.model.CNNDQN import CNNDQN
+    from env.MnistClassifierEnv import MnistClassifierEnv
+    from model.mnist.models import LeNet
+    max_turn = 2000
+    episode = 500
+    train_after_every = 10
+    memory_size = 2 * train_after_every * max_turn
+    run_experiment([DqnAgent(CNNDQN(learning_rate=1e-3), action_step=64, memory_size=memory_size, eps_greed=0.1, gamma=0.9)], [MnistClassifierEnv(LeNet(), max_turn=max_turn)], 
+                episode=episode, 
+                train_after_every=train_after_every,
+                save_trajectory_every=20, 
+                report_after_every=1)
+    logger.info("LeNet<->CNNDQN (specific settings) ends.")
 
 #----------------------- experiment list -----------------------
 

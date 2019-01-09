@@ -16,7 +16,7 @@ class Logger(object):
 
     def __init__(self):
         if not Logger.__init:
-            # init logger
+            # init default logger
             self.logger = logging.getLogger("lrDialogSys")
             self.logger.setLevel(logging.DEBUG)
             self.fh = logging.FileHandler(config.logging_loc)
@@ -29,6 +29,19 @@ class Logger(object):
             self.ch.setFormatter(formatter_c)
             self.logger.addHandler(self.fh)
             self.logger.addHandler(self.ch)
+            # answer logger
+            self.answer = logging.getLogger("lrDialogSys_ans")
+            self.answer.setLevel(logging.INFO)
+            self.fh_ans = logging.FileHandler(config.logging_ans_loc)
+            self.fh_ans.setLevel(logging.INFO)
+            self.ch_ans = logging.StreamHandler(sys.stdout)
+            self.ch_ans.setLevel(logging.INFO)
+            formatter_ans = logging.Formatter('# [%(asctime)s][%(levelname)s]:\n%(message)s')
+            self.fh_ans.setFormatter(formatter_ans)
+            self.ch_ans.setFormatter(formatter_ans)
+            self.answer.addHandler(self.fh_ans)
+            self.answer.addHandler(self.ch_ans)
+            # single instance
             print("Logger init", file=sys.stderr)
             Logger.__init = True
     
@@ -46,3 +59,6 @@ class Logger(object):
     
     def critical(self, message):
         self.logger.critical(message)
+    
+    def record(self, message):
+        self.answer.info(message)

@@ -19,6 +19,9 @@ def test_funcname():
     import sys
     print(sys._getframe())
 
+
+# from model.mnist.models.lenet import LeNet
+# lenet = LeNet()
 def test_classifier(classifier, dataset=test_mnist()):
     import matplotlib.pyplot as plt
     import numpy as np
@@ -39,5 +42,25 @@ def test_classifier(classifier, dataset=test_mnist()):
         fig.tight_layout()
         plt.show()
 
-from model.mnist.models.lenet import LeNet
-test_classifier(LeNet())
+def test_mnist_replay_memory():
+    from random import randint
+    from memory.MnistReplayMemory import MnistReplayMemory
+    mrm = MnistReplayMemory(max_size=5)
+    def generate_s_a_r_s():
+        return (randint(0,5), randint(0,5), randint(0,5), randint(0,5), randint(0,5))
+    for i in range(10):
+        nw = generate_s_a_r_s()
+        print("append ", str(nw))
+        mrm.append(nw)
+        print(mrm)
+
+def test_saving_net():
+    from agent.mnist.model.CNNDQN import CNNDQN
+    import numpy as np
+    c = CNNDQN()
+    c.predict(np.random.random((2, 28, 28)))
+    c.save()
+
+test_saving_net()
+
+# test_mnist_replay_memory()

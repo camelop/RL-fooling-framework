@@ -10,7 +10,7 @@ class AgentBase(object):
         '''return an action'''
         raise NotImplementedError
     
-    def record(self, _state, action, reward, state_):
+    def record(self, _state, action, reward, state_, isFinish):
         pass # since this is not necessary for rule based agent
     
     def train(self):

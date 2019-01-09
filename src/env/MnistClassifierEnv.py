@@ -24,8 +24,10 @@ class MnistClassifierEnv(EnvBase):
         self.true_label = None
         self.current_punish = 0
 
-    def __init__(self, model=random_classifier(), sim_punish_model=punish_ssim, sim_punish_weight=1, success_reward=10, max_turn=1000, turn_punish=0.01):
+    def __init__(self, model=random_classifier(), sim_punish_model=punish_ssim, sim_punish_weight=5, success_reward=10, max_turn=1000, turn_punish=None):
         super(MnistClassifierEnv, self).__init__()
+        if turn_punish is None:
+            turn_punish = success_reward / max_turn
         self.model = model
         self.dataset = MnistDataset(config.mnist_train_image_loc, config.mnist_train_label_loc, config.mnist_test_image_loc, config.mnist_test_label_loc)
         self.sim_punish_model = sim_punish_model

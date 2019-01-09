@@ -7,9 +7,14 @@ assert len(argv) == 2 # python trajectory_player.py *.pickle
 t = Trajectory(loc=argv[1])
 s = argv[1].split(os.path.sep)
 front = os.path.sep.join(s[:-1])
-des_loc_html = os.path.sep.join((front, s[-1][:-7]+".html")) # replace .pickle with .html
-des_loc_gif = os.path.sep.join((front, s[-1][:-7]+".gif")) # replace .pickle with .html
-des_loc_mp4 = os.path.sep.join((front, s[-1][:-7]+".mp4")) # replace .pickle with .html
+if len(front) != 0:
+    des_loc_html = os.path.sep.join((front, s[-1][:-7]+".html")) # replace .pickle with .html
+    des_loc_gif = os.path.sep.join((front, s[-1][:-7]+".gif")) # replace .pickle with .html
+    des_loc_mp4 = os.path.sep.join((front, s[-1][:-7]+".mp4")) # replace .pickle with .html
+else:
+    des_loc_html = s[-1][:-7]+".html" # replace .pickle with .html
+    des_loc_gif = s[-1][:-7]+".gif" # replace .pickle with .html
+    des_loc_mp4 = s[-1][:-7]+".mp4" # replace .pickle with .html
 t.show()
 c = input("Save to HTML5? y/[n] ")
 if c == "y":
