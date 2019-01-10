@@ -14,7 +14,9 @@ class DqnAgent(AgentBase):
         if resetMemory:
             self.memory.reset()
     
-    def __init__(self, model, memory_size=2000, action_step=4, gamma=0.8, eps_greed=0.5):
+    def __init__(self, model, memory_size=2000, action_step=4, gamma=0.8, eps_greed=0.5, double_greed_every=1):
+        self.double_greed_every = double_greed_every
+        self.double_greed_count = 0
         self.eps_greedy = eps_greed
         self.action_step = action_step
         self.memory_size = memory_size
@@ -75,10 +77,17 @@ class DqnAgent(AgentBase):
                     rewards[i, 0, :, :] = samples[i][2] * ((samples[i][1] - samples[i][0][0]) > 0)
                     rewards[i, 1, :, :] = samples[i][2] * ((samples[i][1] - samples[i][0][0]) < 0)
                 else:
-                    Q = samples[i][2] + self.gamma * self.model.predict(states[i]).max()
-                    rewards[i, 0, :, :] = Q * ((samples[i][1] - samples[i][0][0]) > 0)
+                    Q = samples[i][2] + self.gamma * self.model.predict(states[i]).max() # np.inf?
+                    if Q == np.inf or Q == -np.inf or Q == np.nan:
+                        logger.warning("Invalid Q value: {} encountered.".format(str(Q)))
+                        Q = 0
+                    rewards[i, 0, :, :] = Q * ((samples[i][1] - samples[i][0][0]) > 0) 
                     rewards[i, 1, :, :] = Q * ((samples[i][1] - samples[i][0][0]) < 0)
             self.model.train(states, action_masks, rewards)
-    
+        # update eps-greed
+        self.double_greed_count += 1
+        if (self.double_greed_count + 1) % self.double_greed_every == 0:
+            logger.info("eps_greedy updated {} -> {}".format(str(self.eps_greedy), str(1.0 - (1.0 - self.eps_greedy) / 2)))
+            self.eps_greedy = 1.0 - (1.0 - self.eps_greedy) / 2
     def __str__(self):
         return "{}({})".format(self.__class__.__name__, str(self.model))

@@ -14,19 +14,21 @@ from mxnet.gluon import loss as gloss, nn
 
 class CNNDQN(MnistAgentModelBase):
 
-    def __init__(self, learning_rate=0.01, diff_state=True, load_from=None, save_after_every=50):
+    def __init__(self, learning_rate=0.01, diff_state=True, load_from=None, save_after_every=10, weight_decay=0):
         self.diff_state = diff_state
         self.learning_rate = learning_rate
         self.save_counter = 0
         self.save_after_every = save_after_every
         self.net = nn.Sequential()
         self.net.add(
-            nn.BatchNorm(),
-            nn.Conv2D(channels=8, kernel_size=3, padding = 1, activation='relu'),
-            nn.BatchNorm(),
-            nn.Conv2D(channels=4, kernel_size=7, padding = 3, activation='relu'),
+            # nn.Conv2D(channels=4, kernel_size=1, padding = 0, activation='relu'),
+            nn.Conv2D(channels=64, kernel_size=5, padding = 2, activation='relu'),
             nn.BatchNorm(),
             # nn.Conv2D(channels=4, kernel_size=3, padding = 1, activation='relu'),
+            nn.Conv2D(channels=32, kernel_size=1, padding = 0, activation='relu'),
+            nn.BatchNorm(),
+            nn.Conv2D(channels=16, kernel_size=1, padding = 0, activation='relu'),
+            nn.BatchNorm(),
             nn.Conv2D(channels=2, kernel_size=1, padding = 0, activation='relu'),
             )
         def try_gpu():
@@ -39,7 +41,7 @@ class CNNDQN(MnistAgentModelBase):
         self.ctx = try_gpu()
         self.net.initialize(force_reinit=True, ctx=self.ctx, init=init.Xavier(magnitude=0.01))
         self.loss = gloss.L2Loss()
-        self.trainer = gluon.Trainer(self.net.collect_params(), 'sgd', {'learning_rate': learning_rate})
+        self.trainer = gluon.Trainer(self.net.collect_params(), 'sgd', {'learning_rate': learning_rate, 'wd': weight_decay})
         if load_from is not None:
             self.load(load_from)
 
@@ -57,6 +59,7 @@ class CNNDQN(MnistAgentModelBase):
         action_mask = nd.array(action_mask).as_in_context(self.ctx)
         reward = nd.array(reward).as_in_context(self.ctx)
         losses = []
+        self.net.collect_params()
         for e in range(epoch):
             with autograd.record():
                 reward_hat = self.net(state) * action_mask

@@ -61,6 +61,9 @@ def test_saving_net():
     c.predict(np.random.random((2, 28, 28)))
     c.save()
 
-test_saving_net()
+def test_CNNDQN_net_params(loc):
+    from agent.mnist.model.CNNDQN import CNNDQN
+    c = CNNDQN(load_from=loc)
+    return c
 
-# test_mnist_replay_memory()
+# m = test_CNNDQN_net_params("src/agent/mnist/model/checkpoint/CNNDQN[599]-2019-1-10-1-28-46.mxparam")

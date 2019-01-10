@@ -31,7 +31,7 @@ class Trajectory(object):
         with open(loc, 'rb') as f:
             self.data = pickle.load(f)
 
-    def createAnimation(self, fps=24.0):
+    def createAnimation(self, fps=24.0, speed=None):
         if self.data['env_name'].startswith('MnistClassifierEnv'):
             fig, axs = plt.subplots(1, 3, figsize=(12.8, 3.6))
             confidence = [infos['confidence'] for infos in self.data['infos_list']]
@@ -40,6 +40,8 @@ class Trajectory(object):
             diffs = [(256 + s - states[0])/2.0 - 1 for s in states]
             frames = list(zip(range(len(states)), diffs, states))
             frames = [frames[0]] + frames # for init_func default
+            if speed is not None:
+                frames = frames[::speed]
             axs[0].imshow(diffs[0], cmap="PiYG", vmin=0, vmax=255)
             axs[0].axis('off')
             axs[0].set_title("Attacking region")
@@ -71,9 +73,9 @@ class Trajectory(object):
         else:
             raise NotImplementedError
 
-    def show(self):
+    def show(self, speed=None):
         if self.ani is None:
-            self.createAnimation()
+            self.createAnimation(speed=speed)
         plt.show()
 
     def saveAsHtml5(self, loc):

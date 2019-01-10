@@ -2,8 +2,8 @@ from manager.Trajectory import Trajectory
 import os, sys
 
 argv = sys.argv
-assert len(argv) == 2 # python trajectory_player.py *.pickle
-
+assert len(argv) >= 2 # python trajectory_player.py *.pickle
+speed = int(argv[2]) if len(argv) > 2 else None
 t = Trajectory(loc=argv[1])
 s = argv[1].split(os.path.sep)
 front = os.path.sep.join(s[:-1])
@@ -15,7 +15,7 @@ else:
     des_loc_html = s[-1][:-7]+".html" # replace .pickle with .html
     des_loc_gif = s[-1][:-7]+".gif" # replace .pickle with .html
     des_loc_mp4 = s[-1][:-7]+".mp4" # replace .pickle with .html
-t.show()
+t.show(speed=speed)
 c = input("Save to HTML5? y/[n] ")
 if c == "y":
     t.saveAsHtml5(loc=des_loc_html)
